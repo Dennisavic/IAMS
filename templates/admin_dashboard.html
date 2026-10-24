@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h3 class="mb-4">Administrator Dashboard</h3>
+<div class="row g-3 mb-4">
+  {% for label, value in [('Total Interns',stats.interns),('Active',stats.active),('Completed',stats.completed),
+    ('Departments',stats.departments),('Supervisors',stats.supervisors),('Pending Logs',stats.pending_logs),
+    ('Certificates',stats.certificates),('New Applications',stats.applications)] %}
+  <div class="col-6 col-md-3"><div class="card card-stat shadow-sm"><div class="card-body">
+    <div class="display-6" data-count="{{ value }}">0</div><div class="stat-label">{{ label }}</div>
+  </div></div></div>
+  {% endfor %}
+</div>
+<div class="row g-4">
+  <div class="col-md-7"><div class="card shadow-sm">
+    <div class="card-header">Recently Registered Interns</div>
+    <ul class="list-group list-group-flush">
+      {% for i in recent %}
+      <li class="list-group-item d-flex justify-content-between">
+        <a href="{{ url_for('admin_intern_detail', intern_id=i.id) }}">{{ i.full_name }}</a>
+        <span class="badge bg-{{ 'success' if i.status=='active' else 'secondary' }}">{{ i.status }}</span></li>
+      {% else %}<li class="list-group-item text-muted">No interns yet.</li>{% endfor %}
+    </ul></div></div>
+  <div class="col-md-5"><div class="card shadow-sm">
+    <div class="card-header">Quick Actions</div><div class="card-body d-grid gap-2">
+      <a class="btn btn-ncc" href="{{ url_for('admin_applications') }}">Review Applications
+        {% if stats.applications %}<span class="badge bg-gold">{{ stats.applications }}</span>{% endif %}</a>
+      <a class="btn btn-outline-dark" href="{{ url_for('admin_interns') }}">Register Intern</a>
+      <a class="btn btn-outline-dark" href="{{ url_for('admin_supervisors') }}">Register Supervisor</a>
+      <a class="btn btn-outline-dark" href="{{ url_for('admin_reports') }}">View Reports</a>
+    </div></div></div>
+</div>
+{% endblock %}

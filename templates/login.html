@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-5">
+    <div class="card shadow-sm">
+      <div class="login-hero">
+        <div class="d-flex align-items-center gap-3">
+          <div class="seal">NCC</div>
+          <div><h4 class="mb-0">IAMS Portal</h4>
+            <div class="small" style="color:rgba(255,255,255,.75)">Intern &amp; Attachment Management · City Hall</div></div>
+        </div>
+      </div>
+      <div class="card-body p-4">
+        <label class="form-label fw-bold">I am signing in as:</label>
+        <div class="btn-group w-100 mb-4">
+          <input type="radio" class="btn-check" name="rp" id="rI" value="intern" checked>
+          <label class="btn btn-outline-success" for="rI">Intern</label>
+          <input type="radio" class="btn-check" name="rp" id="rS" value="supervisor">
+          <label class="btn btn-outline-success" for="rS">Supervisor</label>
+          <input type="radio" class="btn-check" name="rp" id="rA" value="admin">
+          <label class="btn btn-outline-success" for="rA">Admin</label>
+        </div>
+        <form method="post">
+          <input type="hidden" name="role" id="roleField" value="intern">
+          <div class="mb-3"><label class="form-label">Username</label>
+            <input name="username" class="form-control" required autofocus></div>
+          <div class="mb-3"><label class="form-label">Password</label>
+            <div class="input-group">
+              <input name="password" id="pw" type="password" class="form-control" required>
+              <button class="btn btn-outline-secondary" type="button" data-toggle-pw="#pw">Show</button>
+            </div></div>
+          <button class="btn btn-ncc w-100" id="btn">Sign in as Intern</button>
+        </form>
+        <hr>
+        <p class="text-center small mb-0">Seeking an attachment at Nairobi City County?<br>
+          <a href="{{ url_for('apply') }}" class="btn btn-gold btn-sm mt-2">Apply for Attachment</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  var lbl={intern:"Intern",supervisor:"Supervisor",admin:"Admin"};
+  document.querySelectorAll('input[name="rp"]').forEach(function(r){
+    r.addEventListener('change',function(){
+      document.getElementById('roleField').value=r.value;
+      document.getElementById('btn').textContent="Sign in as "+lbl[r.value];
+    });
+  });
+</script>
+{% endblock %}

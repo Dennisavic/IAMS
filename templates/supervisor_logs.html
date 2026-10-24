@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Daily Logs{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Daily Logs</h3>
+  <div class="btn-group">
+    <a class="btn btn-sm btn-outline-secondary {{ 'active' if show=='pending' }}" href="{{ url_for('supervisor_logs', show='pending') }}">Pending</a>
+    <a class="btn btn-sm btn-outline-secondary {{ 'active' if show=='all' }}" href="{{ url_for('supervisor_logs', show='all') }}">All</a>
+  </div>
+</div>
+<div class="card shadow-sm"><ul class="list-group list-group-flush">
+  {% for log in logs %}<li class="list-group-item"><strong>{{ log.intern.full_name }}</strong> · {{ log.log_date }}
+    {% if log.reviewed %}<span class="badge bg-success">reviewed</span>{% else %}<span class="badge bg-warning text-dark">pending</span>{% endif %}
+    <div class="small">{{ log.activities }}</div>
+    {% if log.challenges %}<div class="small text-muted">Challenges: {{ log.challenges }}</div>{% endif %}
+    {% if not log.reviewed %}<form method="post" action="{{ url_for('supervisor_review_log', log_id=log.id) }}" class="mt-2 d-flex gap-2">
+      <input name="comment" class="form-control form-control-sm" placeholder="Optional comment"><button class="btn btn-sm btn-ncc">Approve</button></form>
+    {% elif log.supervisor_comment %}<div class="small text-success">You: {{ log.supervisor_comment }}</div>{% endif %}</li>
+  {% else %}<li class="list-group-item text-muted">No logs to show.</li>{% endfor %}</ul></div>
+{% endblock %}

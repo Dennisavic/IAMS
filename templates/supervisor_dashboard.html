@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Supervisor Dashboard{% endblock %}
+{% block content %}
+<h3 class="mb-4">Supervisor Dashboard</h3>
+<div class="row g-4">
+  <div class="col-md-5"><div class="card shadow-sm"><div class="card-header">My Interns ({{ interns|length }})</div>
+    <ul class="list-group list-group-flush">
+      {% for i in interns %}<li class="list-group-item d-flex justify-content-between align-items-center">
+        <div><a href="{{ url_for('supervisor_intern_detail', intern_id=i.id) }}">{{ i.full_name }}</a>
+          <div class="small text-muted">{{ i.university or '' }} · {{ i.status }}</div></div>
+        <a class="btn btn-sm btn-outline-dark" href="{{ url_for('supervisor_evaluate', intern_id=i.id) }}">Evaluate</a></li>
+      {% else %}<li class="list-group-item text-muted">No interns assigned yet.</li>{% endfor %}</ul></div></div>
+  <div class="col-md-7"><div class="card shadow-sm"><div class="card-header">Logs Awaiting Review ({{ pending|length }})</div>
+    <ul class="list-group list-group-flush">
+      {% for log in pending %}<li class="list-group-item"><strong>{{ log.intern.full_name }}</strong> · {{ log.log_date }}
+        <div class="small">{{ log.activities }}</div>
+        {% if log.challenges %}<div class="small text-muted">Challenges: {{ log.challenges }}</div>{% endif %}
+        <form method="post" action="{{ url_for('supervisor_review_log', log_id=log.id) }}" class="mt-2 d-flex gap-2">
+          <input name="comment" class="form-control form-control-sm" placeholder="Optional comment">
+          <button class="btn btn-sm btn-ncc">Approve</button></form></li>
+      {% else %}<li class="list-group-item text-muted">All caught up.</li>{% endfor %}</ul></div></div>
+</div>
+{% endblock %}

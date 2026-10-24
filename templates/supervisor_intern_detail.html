@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{{ intern.full_name }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-3">
+  <div><h3>{{ intern.full_name }}</h3>
+    <p class="text-muted">{{ intern.admission_number }} · {{ intern.department.name if intern.department else '—' }}</p></div>
+  <a class="btn btn-ncc" href="{{ url_for('supervisor_evaluate', intern_id=intern.id) }}">Record Evaluation</a>
+</div>
+<div class="row g-4">
+  <div class="col-md-6"><div class="card shadow-sm"><div class="card-header">Daily Logs</div>
+    <ul class="list-group list-group-flush">
+      {% for log in intern.logs|sort(attribute='log_date', reverse=true) %}
+      <li class="list-group-item"><strong>{{ log.log_date }}</strong>
+        {% if log.reviewed %}<span class="badge bg-success">reviewed</span>{% else %}<span class="badge bg-warning text-dark">pending</span>{% endif %}
+        <div class="small">{{ log.activities }}</div>
+        {% if not log.reviewed %}<form method="post" action="{{ url_for('supervisor_review_log', log_id=log.id) }}" class="mt-2 d-flex gap-2">
+          <input name="comment" class="form-control form-control-sm" placeholder="Optional comment"><button class="btn btn-sm btn-ncc">Approve</button></form>
+        {% elif log.supervisor_comment %}<div class="small text-success">You: {{ log.supervisor_comment }}</div>{% endif %}</li>
+      {% else %}<li class="list-group-item text-muted">No logs.</li>{% endfor %}</ul></div></div>
+  <div class="col-md-6"><div class="card shadow-sm mb-3"><div class="card-header">Attendance</div>
+    <ul class="list-group list-group-flush">
+      {% for a in intern.attendance[-8:]|reverse %}<li class="list-group-item small d-flex justify-content-between">{{ a.date }}<span>{{ a.check_in or '—' }}–{{ a.check_out or '—' }} · {{ a.status }}</span></li>
+      {% else %}<li class="list-group-item text-muted small">None.</li>{% endfor %}</ul></div>
+    <div class="card shadow-sm"><div class="card-header">Evaluations</div>
+      <ul class="list-group list-group-flush">
+        {% for e in intern.evaluations %}<li class="list-group-item small"><strong>{{ e.score }}/100 ({{ e.grade }})</strong> · {{ e.evaluation_date }}<br><span class="text-muted">{{ e.comments }}</span></li>
+        {% else %}<li class="list-group-item text-muted small">None yet.</li>{% endfor %}</ul></div></div>
+</div>
+{% endblock %}

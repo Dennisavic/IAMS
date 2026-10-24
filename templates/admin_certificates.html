@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Certificates{% endblock %}
+{% block content %}
+<h3 class="mb-3">Issued Certificates</h3>
+<table class="table table-hover bg-white shadow-sm">
+  <thead><tr><th>Certificate No.</th><th>Intern</th><th>Issue Date</th><th></th></tr></thead>
+  <tbody>{% for c in certificates %}<tr><td>{{ c.certificate_number }}</td><td>{{ c.intern.full_name }}</td><td>{{ c.issue_date }}</td>
+    <td><a class="btn btn-sm btn-outline-success" href="{{ url_for('download_certificate', cert_id=c.id) }}">Download PDF</a></td></tr>
+    {% else %}<tr><td colspan="4" class="text-muted">No certificates issued yet.</td></tr>{% endfor %}</tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ intern.full_name }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-3">
+  <div><h3>{{ intern.full_name }}</h3>
+    <p class="text-muted mb-0">{{ intern.admission_number }} · {{ intern.university or '—' }} · {{ intern.course or '—' }}</p></div>
+  <div class="text-end">
+    <form method="post" action="{{ url_for('admin_intern_status', intern_id=intern.id) }}" class="d-inline">
+      <select name="status" class="form-select form-select-sm d-inline w-auto" onchange="this.form.submit()">
+        {% for s in ['active','completed','terminated'] %}<option value="{{ s }}" {{ 'selected' if intern.status==s }}>{{ s }}</option>{% endfor %}
+      </select></form>
+    {% if intern.status=='completed' and not intern.certificate %}
+    <form method="post" action="{{ url_for('admin_issue_certificate', intern_id=intern.id) }}" class="d-inline">
+      <button class="btn btn-sm btn-ncc">Generate Certificate</button></form>
+    {% elif intern.certificate %}
+    <a class="btn btn-sm btn-outline-success" href="{{ url_for('download_certificate', cert_id=intern.certificate.id) }}">Download Certificate</a>
+    {% endif %}
+  </div>
+</div>
+<div class="row g-4">
+  <div class="col-md-4"><div class="card shadow-sm"><div class="card-body">
+    <h6 class="card-header p-0 border-0 mb-2">Placement</h6>
+    <p class="mb-1"><strong>Department:</strong> {{ intern.department.name if intern.department else '—' }}</p>
+    <p class="mb-1"><strong>Supervisor:</strong> {{ intern.supervisor.full_name if intern.supervisor else '—' }}</p>
+    <p class="mb-1"><strong>Period:</strong> {{ intern.start_date }} → {{ intern.end_date or 'ongoing' }}</p>
+    <p class="mb-0"><strong>Phone:</strong> {{ intern.phone or '—' }}</p></div></div></div>
+  <div class="col-md-4"><div class="card shadow-sm"><div class="card-header">Evaluations</div>
+    <ul class="list-group list-group-flush">
+      {% for e in intern.evaluations %}<li class="list-group-item small"><strong>{{ e.score }}/100 ({{ e.grade }})</strong> · {{ e.evaluation_date }}<br><span class="text-muted">{{ e.comments }}</span></li>
+      {% else %}<li class="list-group-item text-muted small">None yet.</li>{% endfor %}</ul></div></div>
+  <div class="col-md-4"><div class="card shadow-sm"><div class="card-header">Attendance (recent)</div>
+    <ul class="list-group list-group-flush">
+      {% for a in intern.attendance[-8:]|reverse %}<li class="list-group-item small d-flex justify-content-between">{{ a.date }}<span>{{ a.check_in or '—' }}–{{ a.check_out or '—' }} · {{ a.status }}</span></li>
+      {% else %}<li class="list-group-item text-muted small">None.</li>{% endfor %}</ul></div></div>
+  <div class="col-12"><div class="card shadow-sm"><div class="card-header">Daily Logs</div>
+    <ul class="list-group list-group-flush">
+      {% for log in intern.logs|sort(attribute='log_date', reverse=true) %}
+      <li class="list-group-item"><strong>{{ log.log_date }}</strong>
+        {% if log.reviewed %}<span class="badge bg-success">reviewed</span>{% else %}<span class="badge bg-warning text-dark">pending</span>{% endif %}
+        <div class="small">{{ log.activities }}</div>
+        {% if log.supervisor_comment %}<div class="small text-success">Supervisor: {{ log.supervisor_comment }}</div>{% endif %}</li>
+      {% else %}<li class="list-group-item text-muted">No logs.</li>{% endfor %}</ul></div></div>
+</div>
+{% endblock %}

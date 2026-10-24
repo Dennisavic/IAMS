@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}My Performance{% endblock %}
+{% block content %}
+<h3 class="mb-3">My Performance Evaluations</h3>
+<div class="card shadow-sm"><ul class="list-group list-group-flush">
+  {% for e in evaluations %}<li class="list-group-item">
+    <div class="d-flex justify-content-between"><strong>{{ e.score }}/100 — Grade {{ e.grade }}</strong>
+      <span class="text-muted small">{{ e.evaluation_date }} · {{ e.supervisor.full_name if e.supervisor else 'Supervisor' }}</span></div>
+    {% if e.comments %}<div class="small text-muted mt-1">{{ e.comments }}</div>{% endif %}</li>
+  {% else %}<li class="list-group-item text-muted">No evaluations yet. Your supervisor will evaluate you during your placement.</li>{% endfor %}</ul></div>
+{% endblock %}

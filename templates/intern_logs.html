@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}My Daily Logs{% endblock %}
+{% block content %}
+<h3 class="mb-3">Daily Activity Logs</h3>
+<div class="row g-4">
+  <div class="col-md-5"><div class="card shadow-sm"><div class="card-body">
+    <h6>Submit Today's Log</h6>
+    {% if submitted_today %}<p class="text-muted small mb-0">Already submitted today. Well done.</p>
+    {% else %}<form method="post">
+      <div class="mb-3"><label class="form-label">Activities *</label><textarea name="activities" rows="4" class="form-control" required placeholder="What did you work on today?"></textarea></div>
+      <div class="mb-3"><label class="form-label">Challenges</label><textarea name="challenges" rows="2" class="form-control" placeholder="Optional"></textarea></div>
+      <button class="btn btn-ncc">Submit Log</button></form>{% endif %}
+  </div></div></div>
+  <div class="col-md-7"><div class="card shadow-sm"><div class="card-header">Log History</div>
+    <ul class="list-group list-group-flush">
+      {% for log in logs %}<li class="list-group-item"><strong>{{ log.log_date }}</strong>
+        {% if log.reviewed %}<span class="badge bg-success">reviewed</span>{% else %}<span class="badge bg-warning text-dark">pending</span>{% endif %}
+        <div class="small">{{ log.activities }}</div>
+        {% if log.challenges %}<div class="small text-muted">Challenges: {{ log.challenges }}</div>{% endif %}
+        {% if log.supervisor_comment %}<div class="small text-success">Supervisor: {{ log.supervisor_comment }}</div>{% endif %}</li>
+      {% else %}<li class="list-group-item text-muted">No logs yet.</li>{% endfor %}</ul></div></div>
+</div>
+{% endblock %}

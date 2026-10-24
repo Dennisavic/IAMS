@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Evaluate{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-md-6"><div class="card shadow-sm"><div class="card-body p-4">
+  <h4>Performance Evaluation</h4>
+  <p class="text-muted">{{ intern.full_name }} · {{ intern.admission_number }}</p>
+  <form method="post">
+    <div class="mb-3"><label class="form-label">Score (0–100) *</label>
+      <input name="score" type="number" min="0" max="100" class="form-control" required>
+      <div class="form-text">A: 80–100 · B: 70–79 · C: 60–69 · D: 50–59 · E: below 50</div></div>
+    <div class="mb-3"><label class="form-label">Comments</label>
+      <textarea name="comments" rows="4" class="form-control" placeholder="Strengths, areas to improve, overall remarks…"></textarea></div>
+    <button class="btn btn-ncc">Submit Evaluation</button>
+    <a class="btn btn-outline-secondary" href="{{ url_for('supervisor_intern_detail', intern_id=intern.id) }}">Cancel</a>
+  </form>
+</div></div></div></div>
+{% endblock %}

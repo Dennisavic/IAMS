@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Departments{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Departments</h3><button class="btn btn-ncc" data-bs-toggle="modal" data-bs-target="#add">+ Add Department</button>
+</div>
+<table class="table table-hover bg-white shadow-sm">
+  <thead><tr><th>Name</th><th>Head of Department</th><th>Location</th></tr></thead>
+  <tbody>{% for d in departments %}<tr><td>{{ d.name }}</td><td>{{ d.hod_name or '—' }}</td><td>{{ d.location or '—' }}</td></tr>
+    {% else %}<tr><td colspan="3" class="text-muted">No departments yet.</td></tr>{% endfor %}</tbody>
+</table>
+<div class="modal fade" id="add"><div class="modal-dialog"><div class="modal-content">
+  <form method="post">
+    <div class="modal-header"><h5 class="modal-title">Add Department</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+      <div class="mb-3"><label class="form-label">Name *</label><input name="name" class="form-control" required></div>
+      <div class="mb-3"><label class="form-label">Head of Department</label><input name="hod_name" class="form-control"></div>
+      <div class="mb-3"><label class="form-label">Location</label><input name="location" class="form-control"></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ncc">Save</button></div>
+  </form></div></div></div>
+{% endblock %}

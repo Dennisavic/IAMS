@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Apply for Attachment{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card shadow-sm">
+      <div class="login-hero"><h4 class="mb-0">Industrial Attachment Application</h4>
+        <div class="small" style="color:rgba(255,255,255,.75)">Reviewed by the ICT/HR administrator</div></div>
+      <div class="card-body p-4">
+        <form method="post" class="row g-3">
+          <div class="col-md-6"><label class="form-label">Full name *</label><input name="full_name" class="form-control" required></div>
+          <div class="col-md-6"><label class="form-label">Admission / Reg number *</label><input name="admission_number" class="form-control" required placeholder="e.g. JKUAT-BBIT-2210"></div>
+          <div class="col-md-6"><label class="form-label">Email</label><input name="email" type="email" class="form-control"></div>
+          <div class="col-md-6"><label class="form-label">Phone</label><input name="phone" class="form-control" placeholder="07XX XXX XXX"></div>
+          <div class="col-md-6"><label class="form-label">University / College</label><input name="university" class="form-control"></div>
+          <div class="col-md-6"><label class="form-label">Course</label><input name="course" class="form-control"></div>
+          <div class="col-md-6"><label class="form-label">Preferred department</label>
+            <select name="preferred_department_id" class="form-select"><option value="">No preference</option>
+              {% for d in departments %}<option value="{{ d.id }}">{{ d.name }}</option>{% endfor %}</select></div>
+          <div class="col-12"><label class="form-label">Why Nairobi City County?</label>
+            <textarea name="motivation" rows="3" class="form-control" placeholder="Briefly describe your interest and what you hope to learn"></textarea></div>
+          <div class="col-12"><hr class="mb-0"></div>
+          <div class="col-12"><p class="small text-muted mb-0">Choose the credentials you'll use to sign in once approved.</p></div>
+          <div class="col-md-4"><label class="form-label">Username *</label><input name="username" class="form-control" required></div>
+          <div class="col-md-4"><label class="form-label">Password * <span class="text-muted small">(min 6)</span></label>
+            <div class="input-group"><input name="password" id="pw" type="password" class="form-control" minlength="6" required>
+              <button class="btn btn-outline-secondary" type="button" data-toggle-pw="#pw">Show</button></div></div>
+          <div class="col-md-4"><label class="form-label">Confirm password *</label><input name="confirm_password" type="password" class="form-control" required></div>
+          <div class="col-12 d-flex gap-2"><button class="btn btn-ncc">Submit Application</button>
+            <a class="btn btn-outline-secondary" href="{{ url_for('login') }}">Back to login</a></div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

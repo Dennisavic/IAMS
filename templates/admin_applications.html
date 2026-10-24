@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Applications{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Attachment Applications</h3>
+  <div class="btn-group">
+    <a class="btn btn-sm btn-outline-secondary {{ 'active' if show=='pending' }}" href="{{ url_for('admin_applications', show='pending') }}">Pending</a>
+    <a class="btn btn-sm btn-outline-secondary {{ 'active' if show=='approved' }}" href="{{ url_for('admin_applications', show='approved') }}">Approved</a>
+    <a class="btn btn-sm btn-outline-secondary {{ 'active' if show=='rejected' }}" href="{{ url_for('admin_applications', show='rejected') }}">Rejected</a>
+  </div>
+</div>
+{% for a in applications %}
+<div class="card shadow-sm mb-3"><div class="card-body">
+  <div class="d-flex justify-content-between flex-wrap">
+    <div>
+      <h5 class="mb-1">{{ a.full_name }}
+        <span class="badge bg-{{ 'warning text-dark' if a.status=='pending' else ('success' if a.status=='approved' else 'secondary') }}">{{ a.status }}</span></h5>
+      <div class="small text-muted">{{ a.admission_number }} · {{ a.university or '—' }} · {{ a.course or '—' }}<br>
+        {{ a.email or 'no email' }} · {{ a.phone or 'no phone' }} ·
+        Preferred: {{ a.preferred_department.name if a.preferred_department else 'none' }} ·
+        Username: <code>{{ a.username }}</code></div>
+      {% if a.motivation %}<p class="small mt-2 mb-0"><em>"{{ a.motivation }}"</em></p>{% endif %}
+      {% if a.rejection_reason %}<p class="small mt-2 mb-0 text-danger">Reason: {{ a.rejection_reason }}</p>{% endif %}
+    </div>
+    {% if a.status == 'pending' %}
+    <div class="text-end mt-2">
+      <button class="btn btn-sm btn-ncc" data-bs-toggle="modal" data-bs-target="#ap{{ a.id }}">Approve &amp; Place</button>
+      <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rj{{ a.id }}">Reject</button>
+    </div>{% endif %}
+  </div>
+</div></div>
+{% if a.status == 'pending' %}
+<div class="modal fade" id="ap{{ a.id }}"><div class="modal-dialog"><div class="modal-content">
+  <form method="post" action="{{ url_for('approve_application', app_id=a.id) }}">
+    <div class="modal-header"><h5 class="modal-title">Approve: {{ a.full_name }}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body">
+      <div class="mb-3"><label class="form-label">Department</label>
+        <select name="department_id" class="form-select">
+          {% for d in departments %}<option value="{{ d.id }}" {{ 'selected' if a.preferred_department_id==d.id }}>{{ d.name }}</option>{% endfor %}
+        </select></div>
+      <div class="mb-3"><label class="form-label">Supervisor</label>
+        <select name="supervisor_id" class="form-select"><option value="">Assign later</option>
+          {% for s in supervisors %}<option value="{{ s.id }}">{{ s.full_name }}</option>{% endfor %}</select></div>
+      <div class="row g-2"><div class="col-6"><label class="form-label">Start</label><input name="start_date" type="date" class="form-control"></div>
+        <div class="col-6"><label class="form-label">End</label><input name="end_date" type="date" class="form-control"></div></div>
+      <p class="small text-muted mt-3 mb-0">Approving creates an intern record and login (<code>{{ a.username }}</code>) with the applicant's chosen password.</p>
+    </div>
+    <div class="modal-footer"><button class="btn btn-ncc">Approve</button></div>
+  </form></div></div></div>
+<div class="modal fade" id="rj{{ a.id }}"><div class="modal-dialog"><div class="modal-content">
+  <form method="post" action="{{ url_for('reject_application', app_id=a.id) }}">
+    <div class="modal-header"><h5 class="modal-title">Reject: {{ a.full_name }}</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+    <div class="modal-body"><label class="form-label">Reason (shown to applicant)</label>
+      <input name="reason" class="form-control" placeholder="e.g. No vacancies this intake"></div>
+    <div class="modal-footer"><button class="btn btn-danger">Reject</button></div>
+  </form></div></div></div>
+{% endif %}
+{% else %}<div class="card shadow-sm"><div class="card-body text-muted">No {{ show }} applications.</div></div>{% endfor %}
+{% endblock %}

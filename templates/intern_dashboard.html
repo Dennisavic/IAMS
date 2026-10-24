@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard{% endblock %}
+{% block content %}
+<h3 class="mb-1">Karibu, {{ intern.full_name.split()[0] }}</h3>
+<p class="text-muted">{{ intern.department.name if intern.department else 'Unassigned' }} ·
+  Supervisor: {{ intern.supervisor.full_name if intern.supervisor else 'Not assigned' }} ·
+  <span class="badge bg-{{ 'success' if intern.status=='active' else 'primary' }}">{{ intern.status }}</span></p>
+<div class="row g-4">
+  <div class="col-md-4"><div class="card shadow-sm"><div class="card-body">
+    <h6 class="d-flex justify-content-between">Today's Attendance <span id="clock" class="text-muted fw-normal small"></span></h6>
+    {% if not today %}<p class="text-muted small">Not checked in yet.</p>
+      <form method="post" action="{{ url_for('intern_check_in') }}"><button class="btn btn-ncc btn-sm">Check In</button></form>
+    {% elif not today.check_out %}<p class="small">Checked in at <strong>{{ today.check_in }}</strong> ({{ today.status }})</p>
+      <form method="post" action="{{ url_for('intern_check_out') }}"><button class="btn btn-outline-dark btn-sm">Check Out</button></form>
+    {% else %}<p class="small mb-0">Done: {{ today.check_in }}–{{ today.check_out }} ({{ today.status }})</p>{% endif %}
+  </div></div>
+  {% if intern.certificate %}
+  <div class="card shadow-sm mt-3 border-success"><div class="card-body">
+    <h6 class="text-success">Completion Certificate</h6>
+    <p class="small mb-2">{{ intern.certificate.certificate_number }}</p>
+    <a class="btn btn-sm btn-success" href="{{ url_for('download_certificate', cert_id=intern.certificate.id) }}">Download PDF</a>
+  </div></div>{% endif %}
+  </div>
+  <div class="col-md-8"><div class="card shadow-sm">
+    <div class="card-header d-flex justify-content-between">Recent Daily Logs
+      <a class="small" href="{{ url_for('intern_logs') }}">Submit / view all →</a></div>
+    <ul class="list-group list-group-flush">
+      {% for log in recent %}<li class="list-group-item"><strong>{{ log.log_date }}</strong>
+        {% if log.reviewed %}<span class="badge bg-success">reviewed</span>{% else %}<span class="badge bg-warning text-dark">pending</span>{% endif %}
+        <div class="small">{{ log.activities }}</div>
+        {% if log.supervisor_comment %}<div class="small text-success">Supervisor: {{ log.supervisor_comment }}</div>{% endif %}</li>
+      {% else %}<li class="list-group-item text-muted">No logs yet — submit your first daily log.</li>{% endfor %}</ul></div></div>
+</div>
+{% endblock %}

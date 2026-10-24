@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<h3 class="mb-3">Reports &amp; Analytics</h3>
+<div class="row g-4">
+  <div class="col-md-6"><div class="card shadow-sm"><div class="card-header">Interns per Department</div>
+    <table class="table mb-0"><tbody>{% for name, count in per_dept %}<tr><td>{{ name }}</td><td class="text-end">{{ count }}</td></tr>{% endfor %}</tbody></table></div></div>
+  <div class="col-md-6"><div class="card shadow-sm"><div class="card-header">Average Performance Scores</div>
+    <table class="table mb-0"><tbody>{% for name, avg in avg_scores %}<tr><td>{{ name }}</td><td class="text-end">{{ '%.1f'|format(avg) }}</td></tr>
+      {% else %}<tr><td class="text-muted">No evaluations recorded.</td></tr>{% endfor %}</tbody></table></div>
+    <div class="card shadow-sm mt-3"><div class="card-body"><strong>Checked in today:</strong> {{ attendance_today }}</div></div></div>
+</div>
+{% endblock %}
