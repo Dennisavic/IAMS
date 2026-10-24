@@ -1,0 +1,32 @@
+# Virtual environment
+venv/
+.venv/
+env/
+
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# Database (local data and user accounts)
+instance/
+*.db
+*.sqlite3
+
+# Generated certificates (app recreates this folder on startup)
+certificates/*.pdf
+
+# Secrets / local config
+.env
+.env.*
+!.env.example
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
